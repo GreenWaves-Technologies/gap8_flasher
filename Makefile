@@ -65,7 +65,7 @@ INC_DEFINE    = -include $(TARGET_INSTALL_DIR)/include/pulp-os/gap_config.h
 INC_PATH      = $(foreach d, $(INC), -I$d)  $(INC_DEFINE)
 
 # The linker options.
-LIBS          += -L$(TARGET_INSTALL_DIR)/libs -lrt -lio -lrt -lgcc
+LIBS          += -L$(TARGET_INSTALL_DIR)/lib -lrt -lio -lrt -lgcc
 INSTALL_LDDIR = $(INSTALL_DIR)/ld
 LDFLAGS       += -T$(INSTALL_LDDIR)/link.gap8.ld -T$(INSTALL_LDDIR)/gapuino.conf.ld
 
