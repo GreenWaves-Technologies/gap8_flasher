@@ -1,22 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 project(gap-flasher LANGUAGES C VERSION 1.0.0)
 
-if(DEFINED TARGET_INSTALL_DIR)
-    set(GAP_CONFIG ${TARGET_INSTALL_DIR}/include/pulp-os/gap_config.h)
-    list(APPEND INCLUDE_DIRS ${TARGET_INSTALL_DIR}/include/pulp-os ${TARGET_INSTALL_DIR}/include)
-    link_directories(${TARGET_INSTALL_DIR}/lib)
-else()
-    set(GAP_CONFIG ${CMAKE_CURRENT_LIST_DIR}/include/pulp-os/gap_config.h)
-    list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include/pulp-os ${CMAKE_CURRENT_LIST_DIR}/include)
-    link_directories(${CMAKE_CURRENT_LIST_DIR}/lib)
-endif()
+set(GAP_CONFIG ${CMAKE_CURRENT_LIST_DIR}/include/pulp-os/gap_config.h)
+list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include/pulp-os ${CMAKE_CURRENT_LIST_DIR}/include)
+link_directories(${CMAKE_CURRENT_LIST_DIR}/lib)
 
 set(LIBRARIES rt io rt gcc)
 
 list(APPEND SRCS src/flasher.c src/hyper_flash.c src/hyper_flash_commands.c)
 
 add_executable(flasher src/flasher.c src/hyper_flash.c src/hyper_flash_commands.c)
-# set_target_properties(flasher PROPERTIES LINKER_LANGUAGE CXX)
 
 target_compile_options(flasher PRIVATE -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wundef -include ${GAP_CONFIG})
 target_link_libraries(flasher rt io rt gcc)
