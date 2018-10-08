@@ -311,8 +311,18 @@ typedef struct rt_periph_channel_s {
   rt_periph_copy_t *last;
   rt_periph_copy_t *firstToEnqueue;
   unsigned int base;
-  unsigned int data[2];
+  unsigned int data[3];
+  void *callback;
 } rt_periph_channel_t;
+
+
+#if defined(UDMA_VERSION) && UDMA_VERSION >= 3
+typedef struct {
+  rt_periph_copy_t *pendings[2];
+  rt_periph_copy_t *first_waiting;
+  rt_periph_copy_t *last_waiting;
+} rt_periph_spim_t;
+#endif
 
 
 
@@ -357,13 +367,11 @@ typedef struct {
 } rt_hyperram_t;
 
 typedef struct {
-} rt_flash_conf_t;
-
-typedef struct {
   rt_periph_copy_t periph_copy;
 } rt_flash_copy_t;
 
 struct rt_flash_s;
+typedef struct rt_flash_conf_s rt_flash_conf_t;
 
 typedef struct rt_flash_dev_s {
   struct rt_flash_s *(*open)(rt_dev_t *dev, rt_flash_conf_t *conf, rt_event_t *event);
@@ -372,7 +380,6 @@ typedef struct rt_flash_dev_s {
 } rt_flash_dev_t;
 
 typedef struct rt_flash_s {
-  rt_dev_t *dev;
   rt_flash_dev_t desc;
 } rt_flash_t;
 
@@ -471,34 +478,6 @@ typedef struct {
   char name[];
 } rt_fs_desc_t;
 
-typedef struct rt_fs_s {
-  rt_event_t *step_event;
-  rt_event_t *pending_event;
-  int mount_step;
-  const char *dev_name;
-  rt_flash_t *flash;
-  int fs_size;
-  rt_fs_l2_t *fs_l2;
-  unsigned int *fs_info;
-  int nb_comps;
-  unsigned char *cache;
-  unsigned int  cache_addr;
-  rt_mutex_t mutex;
-  rt_event_t event;
-} rt_fs_t;
-
-typedef struct rt_file_s {
-  unsigned int offset;
-  unsigned int size;
-  unsigned int addr;
-  unsigned int pending_addr;
-  rt_fs_t *fs;
-  rt_event_t *pending_event;
-  rt_event_t *step_event;
-  unsigned int pending_buffer;
-  unsigned int pending_size;
-} rt_file_t;
-
 typedef struct rt_fc_lock_req_s rt_fc_lock_req_t;
 
 typedef struct {
@@ -560,10 +539,13 @@ typedef struct rt_hyperram_req_s {
   void *addr;
   void *hyper_addr;
   int size;
+  int stride;
+  int length;
   rt_event_t event;
   int done;
   unsigned char cid;
   unsigned char is_write;
+  unsigned char is_2d;
 } rt_hyperram_req_t ;
 
 typedef struct rt_hyperram_alloc_req_s {
@@ -596,6 +578,8 @@ typedef struct {
   unsigned char is_write;
   unsigned char direct;
 } rt_flash_req_t;
+
+typedef struct rt_file_s rt_file_t;
 
 typedef struct {
   rt_file_t *file;
@@ -682,13 +666,23 @@ extern rt_padframe_profile_t __rt_padframe_profiles[];
 #define RT_PERIPH_COPY_T_PERIPH_DATA       68
 
 
-#define RT_PERIPH_CHANNEL_T_SIZEOF           (6*4)
+#define RT_PERIPH_CHANNEL_T_SIZEOF_LOG2      (5)
+#define RT_PERIPH_CHANNEL_T_SIZEOF           (8*4)
 #define RT_PERIPH_CHANNEL_T_FIRST             0
 #define RT_PERIPH_CHANNEL_T_LAST              4
 #define RT_PERIPH_CHANNEL_T_FIRST_TO_ENQUEUE  8
 #define RT_PERIPH_CHANNEL_T_BASE              12
 #define RT_PERIPH_CHANNEL_T_DATA0             16
 #define RT_PERIPH_CHANNEL_T_DATA1             20
+#define RT_PERIPH_CHANNEL_T_DATA2             24
+#define RT_PERIPH_CHANNEL_T_CALLBACK          28
+
+#if defined(UDMA_VERSION) && UDMA_VERSION >= 3
+#define RT_PERIPH_SPIM_T_PENDING0      0
+#define RT_PERIPH_SPIM_T_PENDING1      4
+#define RT_PERIPH_SPIM_T_FIRST_WAITING 8
+#define RT_PERIPH_SPIM_T_LAST_WAITING  12
+#endif
 
 
 #define RT_CLUSTER_CALL_T_SIZEOF       (8*4)
