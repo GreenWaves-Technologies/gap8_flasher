@@ -36,9 +36,10 @@ ifeq ($(GCC_CHECK),)
 $(error Please make sure that you have installed the toolchain for GAP)
 endif
 
+FLASHER_INC = $(CURDIR)/include
 INSTALL_DIR ?= $(CURDIR)/install
-INCLUDE_DIR ?= $(CURDIR)/include
-LIB_DIR		?= $(CURDIR)/lib
+PULP_INC_DIR ?= $(CURDIR)/include/pulp_includes
+PULP_LIB_DIR		?= $(CURDIR)/lib
 BUILD_DIR   ?= $(CURDIR)/build
 RELEASE_TYPE ?= Debug
 # propagate verbose for debugging
@@ -48,7 +49,7 @@ BUILDDIR      = $(BUILD_DIR)/flasher_build
 $(info #### Building in $(BUILD_DIR))
 $(info #### Release type is $(RELEASE_TYPE))
 $(info #### Installing to $(INSTALL_DIR))
-$(info #### Installing target files to $(INCLUDE_DIR))
+$(info #### Installing target files to $(PULP_INC_DIR))
 
 BIN_DIR 	  = $(INSTALL_DIR)/bin
 BIN           = $(BIN_DIR)/flasher
@@ -57,15 +58,16 @@ SRCS 		  = flasher.c hyper_flash.c hyper_flash_commands.c
 SRC_DIR 	  = $(CURDIR)/src
 OBJECTS   	  = $(patsubst %.c, $(BUILDDIR)/%.o, $(foreach f, $(SRCS), $(SRC_DIR)/$(f)))
 
-INC           = $(INCLUDE_DIR) \
-				$(INCLUDE_DIR)/pulp-os \
+INC           = $(PULP_INC_DIR) \
+				$(PULP_INC_DIR)/pulp-os \
+				$(FLASHER_INC)
 
-INC_DEFINE    = -include $(INCLUDE_DIR)/pulp-os/gap_config.h
+INC_DEFINE    = -include $(PULP_INC_DIR)/pulp-os/gap_config.h
 
 INC_PATH      = $(foreach d, $(INC), -I$d)  $(INC_DEFINE)
 
 # The linker options.
-LIBS          += -L$(LIB_DIR) -lrt -lio -lrt -lgcc
+LIBS          += -L$(PULP_LIB_DIR) -lrt -lio -lrt -lgcc
 INSTALL_LDDIR = $(INSTALL_DIR)/ld
 LDFLAGS       += -T$(INSTALL_LDDIR)/link.gap8.ld -T$(INSTALL_LDDIR)/gapuino.conf.ld
 
