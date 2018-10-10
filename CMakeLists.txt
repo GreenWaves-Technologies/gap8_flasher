@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.5)
 project(gap-flasher LANGUAGES C VERSION 1.0.0)
 
 set(GAP_CONFIG ${CMAKE_CURRENT_LIST_DIR}/include/pulp_includes/pulp-os/gap_config.h)
-list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include/pulp_includes/pulp-os ${CMAKE_CURRENT_LIST_DIR}/include)
+list(APPEND INCLUDE_DIRS 
+    ${CMAKE_CURRENT_LIST_DIR}/include/pulp_includes/pulp-os
+    ${CMAKE_CURRENT_LIST_DIR}/include
+    ${CMAKE_CURRENT_LIST_DIR}/include/pulp_includes
+)
 link_directories(${CMAKE_CURRENT_LIST_DIR}/lib)
 
 set(LIBRARIES rt io rt gcc)
