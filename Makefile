@@ -74,7 +74,7 @@ LDFLAGS       += -T$(INSTALL_LDDIR)/link.gap8.ld -T$(INSTALL_LDDIR)/gapuino.conf
 LIBSFLAGS     += -nostartfiles -nostdlib
 WRAP_FLAGS    = -Wl,--gc-sections
 
-PULP_CFLAGS += -O3 #-DDEBUG -DfileIO
+PULP_CFLAGS += -O3 -DDEBUG #-DfileIO
 
 RISCV_FLAGS   = -march=rv32imcxgap8 -mPE=8 -mFC=1 -D__riscv__
 GAP_FLAGS	 += -D__pulp__

@@ -49,13 +49,13 @@ int hyper_init()
     hal_hyper_start_ip();
 
     // Set memory base address with RAM = 16M
-    hal_hyper_udma_mbr0_set(REG_MBR0);
-    hal_hyper_udma_mbr1_set(REG_MBR1>>24);
+    hal_hyper_udma_mbr0_set(REG_MBR1>>24);
+    hal_hyper_udma_mbr1_set(REG_MBR0);
 
     // HyperRAM
-    hal_hyper_udma_dt0_set(1);
+    hal_hyper_udma_dt0_set(0);
     // HyperFlash
-    hal_hyper_udma_dt1_set(0);
+    hal_hyper_udma_dt1_set(1);
 
     // When using flash, this bit should set to 0, always memory access
     hal_hyper_udma_crt1_set(MEM_ACCESS);
