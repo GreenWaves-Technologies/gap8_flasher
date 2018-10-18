@@ -19,8 +19,22 @@ target_compile_options(flasher PRIVATE -Wextra -Wall -Wno-unused-parameter -Wno-
 target_link_libraries(flasher rt io rt gcc)
 target_include_directories(flasher PRIVATE ${INCLUDE_DIRS})
 
+list(APPEND SRCS src/fuser.c)
+
+add_executable(fuser src/fuser.c)
+
+target_compile_options(fuser PRIVATE -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wundef -include ${GAP_CONFIG})
+target_link_libraries(fuser rt io rt gcc)
+target_include_directories(fuser PRIVATE ${INCLUDE_DIRS})
+
 install(
     TARGETS flasher
+    DESTINATION bin
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+install(
+    TARGETS fuser
     DESTINATION bin
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
