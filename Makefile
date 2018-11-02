@@ -53,6 +53,7 @@ $(info #### Installing target files to $(PULP_INC_DIR))
 
 BIN_DIR 	  = $(INSTALL_DIR)/bin
 BIN           = $(BIN_DIR)/flasher
+BIN_FUSER	  = $(BIN_DIR)/fuser
 
 SRCS 		  = flasher.c hyper_flash.c hyper_flash_commands.c
 SRC_DIR 	  = $(CURDIR)/src
@@ -104,11 +105,18 @@ dir:
 $(OBJECTS) : $(BUILDDIR)/%.o : %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(PULP_CFLAGS) $(TCFLAGS) $< $(INC_PATH) -MD -MF $(basename $@).d -o $@
+	$(CC) $(PULP_CFLAGS) $(TCFLAGS) $(SRC_DIR)/fuser.c $(INC_PATH) -MD -MF $(BUILD_DIR)/fuser.d -o $(BUILD_DIR)/fuser.o
 
 $(BIN): $(OBJECTS)
 	$(CC) -MMD -MP $(WRAP_FLAGS) $(PULP_CFLAGS) -o $(BIN) $(OBJECTS) $(LIBS) $(LDFLAGS) $(LIBSFLAGS) $(INC_DEFINE)
 
-install: all
+
+$(BIN_FUSER): $(BUILD_DIR)
+	$(CC) -MMD -MP $(WRAP_FLAGS) $(PULP_CFLAGS) -o $(BIN_FUSER) $(BUILD_DIR)/fuser.o $(LIBS) $(LDFLAGS) $(LIBSFLAGS) $(INC_DEFINE)
+
+fuser: $(BIN_FUSER)
+
+install: all fuser
 
 clean:
 	rm -rf $(BIN) $(BUILDDIR)
