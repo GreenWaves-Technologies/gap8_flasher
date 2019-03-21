@@ -78,7 +78,7 @@ WRAP_FLAGS    = -Wl,--gc-sections
 PULP_CFLAGS += -O3 #-DDEBUG -DfileIO
 
 RISCV_FLAGS   = -march=rv32imcxgap8 -mPE=8 -mFC=1 -D__riscv__
-GAP_FLAGS	 += -D__pulp__
+GAP_FLAGS	 += -D__pulp__ -DCONFIG_GAP
 
 CFLAGS        = -Os -g -fno-jump-tables -fno-tree-loop-distribute-patterns -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wundef -fdata-sections -ffunction-sections $(RISCV_FLAGS) $(GAP_FLAGS) -MMD -MP -c
 
