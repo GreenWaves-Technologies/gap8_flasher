@@ -60,15 +60,14 @@ SRC_DIR 	  = $(CURDIR)/src
 OBJECTS   	  = $(patsubst %.c, $(BUILDDIR)/%.o, $(foreach f, $(SRCS), $(SRC_DIR)/$(f)))
 
 INC           = $(PULP_INC_DIR) \
-				$(PULP_INC_DIR)/pulp-os \
 				$(FLASHER_INC)
 
-INC_DEFINE    = -include $(PULP_INC_DIR)/pulp-os/gap_config.h
+INC_DEFINE    = -include $(PULP_INC_DIR)/gap_config.h
 
 INC_PATH      = $(foreach d, $(INC), -I$d)  $(INC_DEFINE)
 
 # The linker options.
-LIBS          += -L$(PULP_LIB_DIR) -lrt -lio -lrt -lgcc
+LIBS          += -L$(PULP_LIB_DIR)/gap -lrt -lrtio -lrt -lgcc
 INSTALL_LDDIR = $(INSTALL_DIR)/ld
 LDFLAGS       += -T$(INSTALL_LDDIR)/link.gap8.ld -T$(INSTALL_LDDIR)/gapuino.conf.ld
 
