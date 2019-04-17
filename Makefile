@@ -38,7 +38,7 @@ endif
 
 FLASHER_INC = $(CURDIR)/include
 INSTALL_DIR ?= $(CURDIR)/install
-PULP_INC_DIR ?= $(CURDIR)/include/pulp_includes
+PULP_INC_DIR ?= $(CURDIR)/include
 PULP_LIB_DIR		?= $(CURDIR)/lib
 BUILD_DIR   ?= $(CURDIR)/build
 RELEASE_TYPE ?= Debug
