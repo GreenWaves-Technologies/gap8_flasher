@@ -268,7 +268,7 @@ typedef struct rt_event_s {
   union {
     rt_periph_copy_t copy;
     struct {
-      unsigned int data[3];
+      unsigned int data[4];
     };
     struct {
       unsigned int time;
@@ -379,6 +379,7 @@ typedef struct {
 struct rt_flash_s;
 typedef struct rt_flash_conf_s rt_flash_conf_t;
 
+// BEWARE, assembly offsets in all flash structures must be updated below if this structure is modified
 typedef struct rt_flash_dev_s {
   struct rt_flash_s *(*open)(rt_dev_t *dev, rt_flash_conf_t *conf, rt_event_t *event);
   void (*close)(struct rt_flash_s *flash, rt_event_t *event);
@@ -386,9 +387,11 @@ typedef struct rt_flash_dev_s {
   void (*program)(struct rt_flash_s *dev, void *data, void *addr, size_t size, rt_event_t *event);
   void (*erase_chip)(struct rt_flash_s *dev, rt_event_t *event);
   void (*erase_sector)(struct rt_flash_s *dev, void *data, rt_event_t *event);
+  void (*erase)(struct rt_flash_s *dev, void *addr, int size, rt_event_t *event);
 
 } rt_flash_dev_t;
 
+// BEWARE, assembly offsets in all flash structures must be updated below if this structure is modified
 typedef struct rt_flash_s {
   rt_flash_dev_t desc;
 } rt_flash_t;
@@ -398,10 +401,14 @@ typedef struct rt_hyperflash_s {
   int channel;
 } rt_hyperflash_t;
 
-typedef struct rt_spiflash_s {
+// BEWARE, assembly offsets must be updated below if this structure is modified
+typedef struct {
   rt_flash_t header;
-  int channel;
-} rt_spiflash_t;
+  int periph_id;
+  unsigned int periph_base;
+  rt_periph_copy_t *first_pending_copy;
+  rt_periph_copy_t *last_pending_copy;
+} rt_mram_t;
 
 typedef struct rt_uart_s {
   int open_count;
@@ -468,8 +475,10 @@ typedef struct rt_i2s_s {
 } rt_i2s_t;
 
 typedef struct rt_fs_l2_s {
-  int fs_offset;
-  int fs_size;
+  uint32_t fs_offset;
+  uint32_t reserved0;
+  uint32_t fs_size;
+  uint32_t reserved1;
 } rt_fs_l2_t;
 
 
@@ -639,6 +648,7 @@ typedef struct rt_task_s {
   unsigned char cid;
   unsigned char nb_cores_to_pop;
   unsigned char nb_cores_to_end;
+  unsigned char pending;
 } rt_task_t;
 
 typedef struct
@@ -733,6 +743,12 @@ extern rt_padframe_profile_t __rt_padframe_profiles[];
 #endif
 
 
+#define RT_MRAM_T_PERIPH_ID          28
+#define RT_MRAM_T_PERIPH_BASE        32
+#define RT_MRAM_T_FIRST_PENDING_COPY 36
+#define RT_MRAM_T_LAST_PENDING_COPY  40
+
+
 #define RT_CLUSTER_CALL_T_SIZEOF       (8*4)
 #define RT_CLUSTER_CALL_T_NB_PE        0
 #define RT_CLUSTER_CALL_T_ENTRY        4
@@ -765,6 +781,7 @@ extern rt_padframe_profile_t __rt_padframe_profiles[];
 #define RT_TASK_T_CID         (9*4+3)
 #define RT_TASK_T_NB_CORES_TO_POP (9*4+4)
 #define RT_TASK_T_NB_CORES_TO_END (9*4+5)
+#define RT_TASK_T_PENDING     (9*4+6)
 
 /// @endcond
 
