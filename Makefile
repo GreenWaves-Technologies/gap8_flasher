@@ -38,9 +38,9 @@ endif
 
 FLASHER_INC = $(CURDIR)/include
 INSTALL_DIR ?= $(CURDIR)/install
-PULP_INC_DIR ?= $(CURDIR)/include
-PULP_LIB_DIR		?= $(CURDIR)/lib
-BUILD_DIR   ?= $(CURDIR)/build
+PULP_INC_DIR = $(CURDIR)/include
+PULP_LIB_DIR		= $(CURDIR)/lib
+BUILD_DIR   = $(CURDIR)/build
 RELEASE_TYPE ?= Debug
 # propagate verbose for debugging
 VERBOSE ?= 0
@@ -59,8 +59,7 @@ SRCS 		  = flasher.c hyper_flash.c hyper_flash_commands.c
 SRC_DIR 	  = $(CURDIR)/src
 OBJECTS   	  = $(patsubst %.c, $(BUILDDIR)/%.o, $(foreach f, $(SRCS), $(SRC_DIR)/$(f)))
 
-INC           = $(PULP_INC_DIR) \
-				$(FLASHER_INC)
+INC           = $(FLASHER_INC)
 
 INC_DEFINE    = -include $(PULP_INC_DIR)/gap_config.h
 
